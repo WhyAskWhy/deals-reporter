@@ -1,0 +1,48 @@
+------------------------------------------------------------------------
+r219 | deoren | 2011-11-12 22:56:46 -0600 (Sat, 12 Nov 2011) | 1 line
+
+Fixed argument order for send_email. This was broken when the default argument was set. Turning off debug mode for now.
+------------------------------------------------------------------------
+r218 | deoren | 2011-11-12 22:49:20 -0600 (Sat, 12 Nov 2011) | 1 line
+
+Set empty default argument value for site_name for when a single email is sent.
+------------------------------------------------------------------------
+r217 | deoren | 2011-11-12 22:44:59 -0600 (Sat, 12 Nov 2011) | 1 line
+
+Changing the default to a single email for all deals.
+------------------------------------------------------------------------
+r216 | deoren | 2011-11-12 22:44:24 -0600 (Sat, 12 Nov 2011) | 1 line
+
+Fixed email subject line. I had the options mixed up.
+------------------------------------------------------------------------
+r215 | deoren | 2011-11-12 22:32:49 -0600 (Sat, 12 Nov 2011) | 7 lines
+
+In addition to the sites supported before, email_ebook_deals.py now supports Deal of the Day announcements for:
+
+* O'Reilly
+* Microsoft Press
+* Manning Books
+
+Bulk emails (all sites in one) and separate emails are supported. BeautifulSoup is used for parsing instead of the regular expression grouping I used previously.
+------------------------------------------------------------------------
+r214 | deoren | 2011-11-12 20:04:19 -0600 (Sat, 12 Nov 2011) | 6 lines
+
+MOSTLY working update to email_ebook_deals.py that:
+
+* Allows for sending one bulk email instead
+* Pattern is specified in dict with url and description instead of hard coded in the prep_msg function.
+
+I'm about to take a hacksaw to the code and try BeautifulSoup and other HTML/XML parsing modules.
+------------------------------------------------------------------------
+r209 | deoren | 2011-10-15 07:35:08 -0500 (Sat, 15 Oct 2011) | 1 line
+
+Fixed description.
+------------------------------------------------------------------------
+r208 | deoren | 2011-10-15 07:33:53 -0500 (Sat, 15 Oct 2011) | 1 line
+
+Added 'Deal of the Day' for Informit and Que Publishing.
+------------------------------------------------------------------------
+r207 | deoren | 2011-10-06 20:47:57 -0500 (Thu, 06 Oct 2011) | 1 line
+
+Python script to fetch a web page and pull the title of the Deal of the Day/Week/whatever from the page. It's crude, but appears to work so far.
+------------------------------------------------------------------------
