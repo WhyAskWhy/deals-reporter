@@ -60,9 +60,9 @@ SITES = [
             'name': 'Manning Books',
         },
         {
-            'url': 'http://www.apress.com/dailydeal/', 
+            'url': 'https://www.apress.com/index.php/dailydeals/index/rss', 
             'tag': 'title',
-            'skip_first_tag': False,
+            'skip_first_tag': True,
             'name': 'Apress',
         },
         {
