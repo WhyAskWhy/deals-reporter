@@ -29,7 +29,7 @@ from BeautifulSoup import BeautifulSoup
 
 DEBUG_ON = False
 
-FROM_ADDR = "ebook-deals@whyaskwhy.org"
+FROM_ADDR = "deals@example.com"
 TO_ADDR   = 'root'
 DATE = datetime.date.today()
 SUBJECT = "eBook Deals for %s" % DATE
