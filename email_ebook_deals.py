@@ -14,8 +14,7 @@
 # http://www.boddie.org.uk/python/HTML.html
 # http://stackoverflow.com/questions/753052/
 
-import re
-import sys
+
 # Import smtplib for the actual sending function
 import smtplib
 
@@ -92,13 +91,13 @@ SITES = [
 
 
 def clean_text(text):
-    "Removes extraneous spaces, spacing, etc"
+    """Removes extraneous spaces, spacing, etc"""
 
     return str(text).replace("\r\n", "").strip()
 
 
 def strip_tags(text):
-    "Removes html/xml tags"
+    """Removes html/xml tags"""
 
     return ' '.join(BeautifulSoup(text).findAll(text=True))
 
@@ -110,7 +109,7 @@ def js_strip(text):
 
 
 def fetch_deal(url, match_on, skip_first_tag=False):
-    '''Fetches web page and returns matched strings'''
+    """Fetches web page and returns matched strings"""
     html_page = urllib.urlopen(url)
     content = html_page.read()
     html_page.close()
@@ -135,7 +134,7 @@ def fetch_deal(url, match_on, skip_first_tag=False):
 
 
 def prep_msg(site_names, matches, urls):
-    '''Prepares a string to deliver to the send_email function'''
+    """Prepares a string to deliver to the send_email function"""
 
     content = ""
 
@@ -151,7 +150,7 @@ def prep_msg(site_names, matches, urls):
     return msg
 
 def send_email(to_addr, from_addr, subject, msg, site_name=""):
-    '''Receives everything necessary to send an email'''
+    """Receives everything necessary to send an email"""
 
     if SINGLE_EMAIL:
         msg['Subject'] = "%s" % subject
@@ -180,7 +179,7 @@ def main():
             matches.append(fetch_deal(site['url'], site['tag'], site['skip_first_tag']))
 
             # If an alternate url exists, pass that instead of the feed url
-            if ('alt_url' in site):
+            if 'alt_url' in site:
                 urls.append(site['alt_url'])
             else:
                 urls.append(site['url'])
@@ -201,7 +200,7 @@ def main():
 
             # Convert deals (and their urls) into a MIME compliant email format.
             # If an alternate url exists, pass that instead of the feed url
-            if (site['alt_url']):
+            if 'alt_url' in site:
                 url = site['alt_url']
             else:
                 url = site['url']
