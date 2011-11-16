@@ -12,6 +12,7 @@
 # http://www.answermysearches.com/how-to-get-a-month-name-in-python/421/
 # http://docs.python.org/library/datetime.html
 # http://www.boddie.org.uk/python/HTML.html
+# http://stackoverflow.com/questions/753052/
 
 import re
 import sys
@@ -42,21 +43,24 @@ USE_DEAL_IN_SUBJECT=False
 
 SITES = [
         {
-            'url': 'http://feeds.feedburner.com/oreilly/mspebookdeal?format=xml', 
+            'url': 'http://feeds.feedburner.com/oreilly/mspebookdeal?format=xml',
+            'alt_url': 'http://oreilly.com/',
             'tag': 'title',
             'skip_first_tag': True,
             'name': 'Microsoft Press',
         },
         {
-            'url': 'http://feeds.feedburner.com/oreilly/ebookdealoftheday?format=xml', 
+            'url': 'http://feeds.feedburner.com/oreilly/ebookdealoftheday?format=xml',
+            'alt_url': 'http://oreilly.com/',
             'tag': 'title',
             'skip_first_tag': True,
             'name': "O'Reilly Media",
         },
         {
-            'url': 'http://twitter.com/statuses/user_timeline/ManningBooks.rss', 
-            'tag': 'title',
-            'skip_first_tag': True,
+            'url': 'http://incsrc.manningpublications.com/dotd.js',
+            'alt_url': 'http://www.manning.com/',
+            'tag': None,
+            'skip_first_tag': False,
             'name': 'Manning Books',
         },
         {
@@ -92,6 +96,19 @@ def clean_text(text):
 
     return str(text).replace("\r\n", "").strip()
 
+
+def strip_tags(text):
+    "Removes html/xml tags"
+
+    return ' '.join(BeautifulSoup(text).findAll(text=True))
+
+def js_strip(text):
+    """Temporary function to remove JavaScript content from
+    text"""
+
+    return text.replace('document.write', '').strip('"()')
+
+
 def fetch_deal(url, match_on, skip_first_tag=False):
     '''Fetches web page and returns matched strings'''
     html_page = urllib.urlopen(url)
@@ -100,15 +117,21 @@ def fetch_deal(url, match_on, skip_first_tag=False):
 
     soup = BeautifulSoup(content)
 
-    if skip_first_tag:
-        item = soup.findAll(match_on)[1]
+    if match_on is not None:
+        if skip_first_tag:
+            item = soup.findAll(match_on)[1]
+        else:
+            item = soup.findAll(match_on)[0]
+
+        item = strip_tags(clean_text(item))
+
+    # tag isn't set, so we're cleaning and using all of the input
+    # text for the item we're reporting as a deal
     else:
-        item = soup.findAll(match_on)[0]
+        item = js_strip(strip_tags(clean_text(soup)))
 
-    # Remove tags from item
-    item = str(item).replace(match_on, '').strip('</>')
+    return item
 
-    return clean_text(item)
 
 
 def prep_msg(site_names, matches, urls):
@@ -155,7 +178,12 @@ def main():
         for site in SITES:
             sites.append(site['name'])
             matches.append(fetch_deal(site['url'], site['tag'], site['skip_first_tag']))
-            urls.append(site['url'])
+
+            # If an alternate url exists, pass that instead of the feed url
+            if ('alt_url' in site):
+                urls.append(site['alt_url'])
+            else:
+                urls.append(site['url'])
 
         # Convert deals (and their urls) into a MIME compliant email format.
         message = prep_msg(sites, matches, urls)
@@ -172,7 +200,13 @@ def main():
             match = fetch_deal(site['url'], site['tag'], site['skip_first_tag'])
 
             # Convert deals (and their urls) into a MIME compliant email format.
-            message = prep_msg(site['name'], match, site['url'])
+            # If an alternate url exists, pass that instead of the feed url
+            if (site['alt_url']):
+                url = site['alt_url']
+            else:
+                url = site['url']
+
+            message = prep_msg(site['name'], match, url)
 
             if DEBUG_ON:
                 print "\n\n%s %s\n%s" % (site['name'], SUBJECT, message)
