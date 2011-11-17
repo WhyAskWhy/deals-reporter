@@ -5,6 +5,8 @@
 
 # Purpose: Fetch Deal of the Day/Week from vendors and send email notifications.
 
+# License: GPLv2
+
 # References:
 # http://docs.python.org/library/smtplib.html
 # http://docs.python.org/library/email-examples.html
