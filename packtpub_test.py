@@ -41,9 +41,6 @@ from StringIO import StringIO
 
 from pprint import pprint as ppr
 
-# Access to OS clipboard
-from Tkinter import Tk
-
 # http://www.crummy.com/software/BeautifulSoup/documentation.html
 from BeautifulSoup import BeautifulSoup
 
