@@ -1,4 +1,4 @@
-#!/usr/bin/python
+ï»¿#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 
@@ -89,7 +89,7 @@ def fetch_page(url):
 
 # <div class="inner"><strong>eBook Deal of the Day:<br>
 # <a href="http://tinyurl.com/7gpgdle">CakePHP 1.3 Application Cookbook</a>
-# </strong><div id="header-description-text">Price: $9.99 | £6.50 | €7.50<br>
+# </strong><div id="header-description-text">Price: $9.99 | Â£6.50 | â‚¬7.50<br>
 # <a href="http://tinyurl.com/7gpgdle">Download a free chapter</a></div>
 
 def pp_get_dotd(page_content):
@@ -130,10 +130,9 @@ def pp_get_dotd(page_content):
 def pp_get_so(page_content):
     """Get the PacktPub Special eBook Offer"""
     
-# <div id="header-offer">
 # <div class="inner"><span style="font-size: 14px;"><u>
 # <b>Special eBook Offer:</b></u></span><br>&nbsp;
-# <br>Buy any 5 eBooks of your choice for <b>$60 | £40 | €50</b>
+# <br>Buy any 5 eBooks of your choice for <b>$60 | Â£40 | â‚¬50</b>
 
 # - Special Offer item
     # - start of match would be Special eBook Offer
