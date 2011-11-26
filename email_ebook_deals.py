@@ -24,12 +24,17 @@ import smtplib
 from email.mime.text import MIMEText
 
 import datetime
-import urllib
+import gzip
+import zlib
+from StringIO import StringIO
+
+import urllib2
 
 # http://www.crummy.com/software/BeautifulSoup/documentation.html
 from BeautifulSoup import BeautifulSoup
 
 DEBUG_ON = False
+INFO_ON = False
 
 FROM_ADDR = "deals@example.com"
 TO_ADDR   = 'root'
@@ -37,7 +42,7 @@ DATE = datetime.date.today()
 SUBJECT = "eBook Deals for %s" % DATE
 
 # Single email or one email per SITE entry
-SINGLE_EMAIL=True
+SINGLE_EMAIL= True
 
 # Not implemented yet
 USE_DEAL_IN_SUBJECT=False
@@ -109,20 +114,40 @@ def js_strip(text):
 
     return text.replace('document.write', '').strip('"()')
 
+def fetch_page(site):
+    """Fetches web page content"""
 
-def fetch_deal(url, match_on, skip_first_tag=False):
-    """Fetches web page and returns matched strings"""
-    html_page = urllib.urlopen(url)
-    content = html_page.read()
-    html_page.close()
+    if INFO_ON: print "\n[I] Fetching:\t%s" % site['url']
 
-    soup = BeautifulSoup(content)
+    request = urllib2.Request(site['url'])
+    request.add_header('Accept-encoding', 'gzip')
+    response = urllib2.urlopen(request)
+    if response.info().get('Content-Encoding') == 'gzip':
+        buf = StringIO( response.read())
+        fh = gzip.GzipFile(fileobj=buf)
+        content = fh.read()
+    elif zlib and 'deflate' in response.info().get('content-encoding', ''):
+        try:
+            content = zlib.decompress(data)
+        except zlib.error, e:
+            sys.exit('[E] ' + sys.exc_info()[0])
+    else:
+            html_page = urllib2.urlopen(site['url'])
+            content = html_page.read()
+            html_page.close()
 
-    if match_on is not None:
-        if skip_first_tag:
-            item = soup.findAll(match_on)[1]
+    return content
+
+def get_deal(site, page_content):
+    """Parses web page content and returns matched strings"""
+
+    soup = BeautifulSoup(page_content)
+
+    if site['tag'] is not None:
+        if site['skip_first_tag']:
+            item = soup.findAll(site['tag'])[1]
         else:
-            item = soup.findAll(match_on)[0]
+            item = soup.findAll(site['tag'])[0]
 
         item = strip_tags(clean_text(item))
 
@@ -178,7 +203,9 @@ def main():
         # http://docs.python.org/tutorial/datastructures.html#looping-techniques
         for site in SITES:
             sites.append(site['name'])
-            matches.append(fetch_deal(site['url'], site['tag'], site['skip_first_tag']))
+            site_content = fetch_page(site)
+            deal = get_deal(site, site_content)
+            matches.append(deal)
 
             # If an alternate url exists, pass that instead of the feed url
             if 'alt_url' in site:
@@ -198,7 +225,8 @@ def main():
 
         # http://docs.python.org/tutorial/datastructures.html#looping-techniques
         for site in SITES:
-            match = fetch_deal(site['url'], site['tag'], site['skip_first_tag'])
+            site_content = fetch_page(site)
+            match = get_deal(site, site_content)
 
             # Convert deals (and their urls) into a MIME compliant email format.
             # If an alternate url exists, pass that instead of the feed url
