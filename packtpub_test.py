@@ -34,8 +34,8 @@ import gzip
 import zlib
 from StringIO import StringIO
 
-# streamWriter = codecs.lookup('utf-8')[-1]
-# sys.stdout = streamWriter(sys.stdout)
+streamWriter = codecs.lookup('utf-8')[-1]
+sys.stdout = streamWriter(sys.stdout)
 
 
 
@@ -188,7 +188,7 @@ def main():
 
 
         print special_offer
-
+# [u'\n', u'\n', u'\n\t\t\n\t[ \n\tSpecial eBook Offer\t\t]', u'\n', u'\n', u'\n', u' Buy any 5 Open Source eBooks of your choice for ', u'$60 | \xa340 | \u20ac50', u' or any 5 Enterprise eBooks of your choice for ', u'$100 | \xa365 | \u20ac80', u'. Grab your copies now.', u'\n', u'\n', u'\n', u'\n']
 
 
 if __name__ == "__main__":
