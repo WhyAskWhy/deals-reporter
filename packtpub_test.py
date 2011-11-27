@@ -56,15 +56,6 @@ def clean_text(text):
     return regex.sub('', text).strip()
 
 
-#    for i, j in dic.iteritems():
-#       text = text.replace(i, j).strip()
-#    return text
-
-def strip_tags(text):
-    """Removes html/xml tags"""
-
-    return ' '.join(BeautifulSoup(text).findAll(text=True))
-
 def fetch_page(url):
     """Fetches web page and returns matched strings"""
 
