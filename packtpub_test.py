@@ -52,10 +52,17 @@ INFO_ON = True
 
 URL='http://www.packtpub.com/'
 
+
 def clean_text(text):
     """Removes extraneous spaces, spacing, etc"""
 
-    return str(text).replace("\r\n", "").strip()
+    regex = re.compile(r'\n*\t*\[*\]*')
+    return regex.sub('', text).strip()
+
+
+#    for i, j in dic.iteritems():
+#       text = text.replace(i, j).strip()
+#    return text
 
 def strip_tags(text):
     """Removes html/xml tags"""
@@ -101,10 +108,10 @@ def pp_get_dotd(page_content):
     results = soup.find("div", { "class" : "inner" })
     #results = re.findall(r'eBook Deal of the Day.*?</a></div>', page_content, re.IGNORECASE)
 
-    ppr(results)
-
     deal = BeautifulSoup(str(results)).findAll(text=True)
-    ppr(deal)
+    
+    print "\n    What was found: "
+    ppr(deal, indent=4)
 
     # Using commented out re.findall() call gives this:
     # -------------------------------------------------------
@@ -125,57 +132,52 @@ def pp_get_dotd(page_content):
 
     #print "\n%s - %s" % (deal[1], deal[2][0:13])
 
-    return deal[1], deal[2][0:13]
+    if 'eBook Deal of the Day' in deal[0]:
+        return deal[1], deal[2][0:13]
+    else:
+        if INFO_ON: print "\n[W] Deal of the Day was not found"
+        return False
     
 def pp_get_so(page_content):
     """Get the PacktPub Special eBook Offer"""
     
-# <div class="inner"><span style="font-size: 14px;"><u>
-# <b>Special eBook Offer:</b></u></span><br>&nbsp;
-# <br>Buy any 5 eBooks of your choice for <b>$60 | £40 | €50</b>
-
-# - Special Offer item
-    # - start of match would be Special eBook Offer
-    # - end of match would be ' ' and then '|' symbol
-    # - strip all html
+# <div id="block-block-114" class="block block-block region-even odd region-count-4 count-9">
+# ...
+# </div>
     
     if INFO_ON: print "\n[I] Searching for Special Offers ..."
 
     soup = BeautifulSoup(page_content)
-    
-    #results = soup.find("div", { "id" : "header-offer" })
     results = soup.find("div", { "id" : "block-block-114" })
-    
-    #results = re.findall(r'eBook Deal of the Day.*?</a></div>', page_content, re.IGNORECASE)
+    print type(results), "\n\n\n"
 
-    #print "results: "
-    #ppr(results)
+    text = BeautifulSoup(str(results)).findAll(text=True)
+    print "\ntext: "
+    ppr(text)
+    print "\n\n"
 
-    deal = BeautifulSoup(str(results)).findAll(text=True)
-    print "deal: "
-    ppr(deal)
-    
-    for item in deal:
-        #item = item.strip('[]').replace(u'\r', '').replace(u'\n', '')
-        print item
-        
-    print "results after cleanup: "
-    ppr(deal)
+    # [u'\n',
+    #  u'\n',
+    #  u'\n\t\t\n\t[ \n\tSpecial eBook Offer\t\t]',
+    #  u'\n',
+    #  u'\n',
+    #  u'\n',
+    #  u' Buy any 5 Open Source eBooks of your choice for ',
+    #  u'$60 | \xa340 | \u20ac50',
+    #  u' or any 5 Enterprise eBooks of your choice for ',
+    #  u'$100 | \xa365 | \u20ac80',
+    #  u'. Grab your copies now.',
+    #  u'\n',
+    #  u'\n',
+    #  u'\n',
+    #  u'\n']
 
-    #deal = clean_text(strip_tags(str(results)))
+    string = ''.join(text)
+    deal = clean_text(string)
 
-
-    # [u'Special eBook Offer:',
-     # u'&nbsp;',
-     # u'Buy any 5 eBooks of your choice for ',
-     # u'$60 | \xc2\u014140 | \xe2&sbquo;\u017950',
-     # u'.',
-     # u'View all Latest books',
-     # u'&nbsp;|&nbsp;',
-     # u'View all Future books']
-    # (u'&nbsp;', u'Buy any 5 eBo')
-
-    #print "\n%s - %s" % (deal[1], deal[2][0:13])
+    # deal = "%s %s %s %s %s" % (text[2].strip('[]\n\t '), text[6].strip('[]\n\t '), \
+    # text[7].strip('[]\n\t ')[:3], text[8].strip('[]\n\t '), \
+    # text[9].strip('[]\n\t ')[:4]) 
 
     return deal
     #return "%s %s %s" % (deal[1].strip(), deal[3].strip(), deal[4][:4].strip())
@@ -183,12 +185,13 @@ def pp_get_so(page_content):
 def main():
 
         page_content = fetch_page(URL)
-        #deal = pp_get_dotd(page_content)
+        deal = pp_get_dotd(page_content)
         special_offer = pp_get_so(page_content) 
 
-
+        if deal:
+            print "The eBook Deal of the Day is: \t%s" % deal
         print special_offer
-# [u'\n', u'\n', u'\n\t\t\n\t[ \n\tSpecial eBook Offer\t\t]', u'\n', u'\n', u'\n', u' Buy any 5 Open Source eBooks of your choice for ', u'$60 | \xa340 | \u20ac50', u' or any 5 Enterprise eBooks of your choice for ', u'$100 | \xa365 | \u20ac80', u'. Grab your copies now.', u'\n', u'\n', u'\n', u'\n']
+
 
 
 if __name__ == "__main__":
