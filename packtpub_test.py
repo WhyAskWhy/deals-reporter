@@ -1,13 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-
 # $Id$
 # $HeadURL$
-
-# Purpose: Fetch web page content and write matching host links to file
-
-# TODO: Allow command-line and file input also?
 
 # License: GPLv2
 
