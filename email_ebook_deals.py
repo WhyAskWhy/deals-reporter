@@ -15,6 +15,9 @@
 # http://docs.python.org/library/datetime.html
 # http://www.boddie.org.uk/python/HTML.html
 # http://stackoverflow.com/questions/753052/
+# http://gomputor.wordpress.com/2008/09/27/search-replace-multiple-words-or-characters-with-python/
+# http://docs.python.org/faq/programming.html#how-do-you-remove-duplicates-from-a-list
+# http://stackoverflow.com/questions/265960/best-way-to-strip-punctuation-from-a-string-in-python
 
 
 # Import smtplib for the actual sending function
@@ -100,7 +103,8 @@ SITES = [
 def clean_text(text):
     """Removes extraneous spaces, spacing, etc"""
 
-    return str(text).replace("\r\n", "").strip()
+    regex = re.compile(r'\n*\t*\[*\]*')
+    return regex.sub('', text).strip()
 
 
 def strip_tags(text):
