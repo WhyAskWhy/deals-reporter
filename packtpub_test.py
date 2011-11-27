@@ -22,6 +22,7 @@
 #   http://www.noah.org/wiki/RegEx_Python#URL_regex_pattern
 #   http://docs.python.org/library/re.html#re.findall
 #   http://docs.python.org/faq/programming.html#how-do-you-remove-duplicates-from-a-list
+#   http://stackoverflow.com/questions/265960/best-way-to-strip-punctuation-from-a-string-in-python
 
 import codecs
 import sys
@@ -103,6 +104,8 @@ def pp_get_dotd(page_content):
     """Get the PacktPub eBook Deal of the Day"""
 
     if INFO_ON: print "\n[I] Searching for Deal of the Day ..."
+    
+    dotd_marker = 'eBook Deal of the Day'
 
     soup = BeautifulSoup(page_content)
     results = soup.find("div", { "class" : "inner" })
@@ -110,8 +113,9 @@ def pp_get_dotd(page_content):
 
     deal = BeautifulSoup(str(results)).findAll(text=True)
     
-    print "\n    What was found: "
-    ppr(deal, indent=4)
+    if DEBUG_ON:
+        print "\n    What was found: "
+        ppr(deal, indent=4)
 
     # Using commented out re.findall() call gives this:
     # -------------------------------------------------------
@@ -132,14 +136,17 @@ def pp_get_dotd(page_content):
 
     #print "\n%s - %s" % (deal[1], deal[2][0:13])
 
-    if 'eBook Deal of the Day' in deal[0]:
+    if dotd_marker in deal[0]:
         return deal[1], deal[2][0:13]
     else:
         if INFO_ON: print "\n[W] Deal of the Day was not found"
         return False
-    
+
 def pp_get_so(page_content):
     """Get the PacktPub Special eBook Offer"""
+    
+    # String we're matching on to determine whether an offer is available
+    so_marker = 'Special eBook Offer'
     
 # <div id="block-block-114" class="block block-block region-even odd region-count-4 count-9">
 # ...
@@ -149,38 +156,21 @@ def pp_get_so(page_content):
 
     soup = BeautifulSoup(page_content)
     results = soup.find("div", { "id" : "block-block-114" })
-    print type(results), "\n\n\n"
 
     text = BeautifulSoup(str(results)).findAll(text=True)
-    print "\ntext: "
-    ppr(text)
-    print "\n\n"
-
-    # [u'\n',
-    #  u'\n',
-    #  u'\n\t\t\n\t[ \n\tSpecial eBook Offer\t\t]',
-    #  u'\n',
-    #  u'\n',
-    #  u'\n',
-    #  u' Buy any 5 Open Source eBooks of your choice for ',
-    #  u'$60 | \xa340 | \u20ac50',
-    #  u' or any 5 Enterprise eBooks of your choice for ',
-    #  u'$100 | \xa365 | \u20ac80',
-    #  u'. Grab your copies now.',
-    #  u'\n',
-    #  u'\n',
-    #  u'\n',
-    #  u'\n']
+    if DEBUG_ON: 
+        print "\ntext: "
+        ppr(text)
+        print "\n\n"
 
     string = ''.join(text)
     deal = clean_text(string)
 
-    # deal = "%s %s %s %s %s" % (text[2].strip('[]\n\t '), text[6].strip('[]\n\t '), \
-    # text[7].strip('[]\n\t ')[:3], text[8].strip('[]\n\t '), \
-    # text[9].strip('[]\n\t ')[:4]) 
-
-    return deal
-    #return "%s %s %s" % (deal[1].strip(), deal[3].strip(), deal[4][:4].strip())
+    if so_marker in deal:
+        return deal.replace(so_marker,'').strip()
+    else:
+        if INFO_ON: print "\n[W] Special eBook Offer not found"
+        return False
 
 def main():
 
@@ -189,8 +179,10 @@ def main():
         special_offer = pp_get_so(page_content) 
 
         if deal:
-            print "The eBook Deal of the Day is: \t%s" % deal
-        print special_offer
+            print "[I] The eBook Deal of the Day is: \n\t%s" % deal
+
+        if special_offer:
+            print "[I] The Special eBook Offer is: \n\t%s" % special_offer
 
 
 
