@@ -35,6 +35,7 @@ import zlib
 from StringIO import StringIO
 
 import re
+import sys
 from pprint import pprint as ppr
 
 import urllib2
