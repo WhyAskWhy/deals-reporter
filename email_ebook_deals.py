@@ -115,8 +115,9 @@ def pp_get_dotd(site, page_content):
         print "\n    [D] What was found: "
         ppr(deal, indent=4)
 
-    if dotd_marker in deal[0]:
-        return deal[1], deal[2][0:13]
+    if dotd_marker in deal[1]:
+        dotd = deal[2] + deal[3][0:13]
+        return dotd
     else:
         if INFO_ON: print "\n[W] %s was not found" % (looking_for)
         return False
@@ -359,8 +360,8 @@ SITES = [
             'tag': 'div',
             # This will need further testing, but I'll need to wait until
             # another dotd posting is made to tweak it.
-            'tag_selector':'class', # 'id' 
-            'tag_selector_value':'inner', # 'header-offer'
+            'tag_selector':'id', # 'id' , 'class'
+            'tag_selector_value':'header-offer', # 'header-offer', 'inner'
             'skip_first_tag': False,
             'name': 'Packt Publishing - eBook Deal of the Day',
             'parse_function':pp_get_dotd,
