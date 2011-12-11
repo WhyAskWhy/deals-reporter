@@ -269,10 +269,21 @@ def get_deal(site, page_content):
             if DEBUG_ON and DEBUG_VERBOSE:
                 print "[D] site['skip_first_tag'] was set"
                 print soup.findAll(site['tag'])
- 
-            item = soup.findAll(site['tag'])[1]
+            try:
+                item = soup.findAll(site['tag'])[1]
+            except IndexError:
+                if INFO_ON: 
+                    print "\n[W] Could not fetch deal for %s" % site['name']
+                item = False
+                return item
         else:
-            item = soup.findAll(site['tag'])[0]
+            try:
+                item = soup.findAll(site['tag'])[0]
+            except IndexError:
+                if INFO_ON: 
+                    print "\n[W] Could not fetch deal for %s" % site['name']
+                item = False
+                return item
 
     # If the tag isn't set, use the raw page text (.js files, etc)
     else:
