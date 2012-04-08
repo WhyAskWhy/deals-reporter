@@ -5,7 +5,24 @@
 
 # Purpose: Fetch Deal of the Day/Week from vendors and send email notifications.
 
-# License: GPLv2
+###########################################################################
+# Copyright © 2012 deoren of WhyAskWhy.org
+###########################################################################
+# This file is part of Deal Mailer.
+
+# Deal Mailer is free software: you can redistribute it and/or modify it under the terms
+# of the GNU General Public License as published by the Free Software Foundation,
+# version 2 of the License.
+
+# Deal Mailer is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License along with
+# Deal Mailer. If not, see http://www.gnu.org/licenses/
+
+# You may also refer to license.txt that is included within this code repository.
+###########################################################################
 
 # References:
 # http://docs.python.org/library/smtplib.html
