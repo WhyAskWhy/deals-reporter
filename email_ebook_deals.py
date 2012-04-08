@@ -348,7 +348,7 @@ SITES = [
         },
         {
             # Packt Offers
-            'enabled':True,
+            'enabled':False,
             'url': 'http://www.packtpub.com/',
             'tag': 'div',
             'tag_selector':'id', # 'id' , 'class'
@@ -359,7 +359,7 @@ SITES = [
         },
         {
             # eBook Bundle offer
-            'enabled':True,
+            'enabled':False,
             'url': 'http://www.packtpub.com/',
             'tag': 'div',
             'tag_selector':'id', # 'id' , 'class'
