@@ -325,25 +325,47 @@ def send_email(to_addr, from_addr, subject, msg, site_name=""):
 
 SITES = [
         {
+            # Special eBook Offer
             'enabled': True,
             'url': 'http://www.packtpub.com/',
             'tag': 'div',
             'tag_selector':'id',
             'tag_selector_value':'block-block-114',
             'skip_first_tag': False,
-            'name': 'Packt Publishing - Special eBook Offer',
+            'name': 'Packt Publishing',
             'parse_function':packtpub_get_deal,
         },
         {
+            # Deal of the Day, Weekend Offers, etc
             'enabled': True,
             'url': 'http://www.packtpub.com/',
             'tag': 'div',
-            # This will need further testing, but I'll need to wait until
-            # another dotd posting is made to tweak it.
             'tag_selector':'id', # 'id' , 'class'
             'tag_selector_value':'header-offer', # 'header-offer', 'inner'
             'skip_first_tag': False,
-            'name': 'Packt Publishing - eBook Deal of the Day',
+            'name': 'Packt Publishing',
+            'parse_function':packtpub_get_deal,
+        },
+        {
+            # Packt Offers
+            'enabled':True,
+            'url': 'http://www.packtpub.com/',
+            'tag': 'div',
+            'tag_selector':'id', # 'id' , 'class'
+            'tag_selector_value':'block-block-13',
+            'skip_first_tag': False,
+            'name': 'Packt Publishing',
+            'parse_function':packtpub_get_deal,
+        },
+        {
+            # eBook Bundle offer
+            'enabled':True,
+            'url': 'http://www.packtpub.com/',
+            'tag': 'div',
+            'tag_selector':'id', # 'id' , 'class'
+            'tag_selector_value':'block-block-128',
+            'skip_first_tag': False,
+            'name': 'Packt Publishing',
             'parse_function':packtpub_get_deal,
         },
         {
