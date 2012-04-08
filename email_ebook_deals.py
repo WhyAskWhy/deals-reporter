@@ -358,6 +358,7 @@ def send_email(to_addr, from_addr, subject, msg, site_name=""):
 
 SITES = [
         {
+            'enabled': True,
             'url': 'http://www.packtpub.com/',
             'tag': 'div',
             'tag_selector':'id',
@@ -367,6 +368,7 @@ SITES = [
             'parse_function':pp_get_so,
         },
         {
+            'enabled': True,
             'url': 'http://www.packtpub.com/',
             'tag': 'div',
             # This will need further testing, but I'll need to wait until
@@ -378,6 +380,7 @@ SITES = [
             'parse_function':pp_get_dotd,
         },
         {
+            'enabled': True,
             'url': 'http://feeds.feedburner.com/oreilly/mspebookdeal?format=xml',
             'alt_url': 'http://oreilly.com/',
             'tag': 'title',
@@ -385,6 +388,7 @@ SITES = [
             'name': 'Microsoft Press',
         },
         {
+            'enabled': True,
             'url': 'http://feeds.feedburner.com/oreilly/ebookdealoftheday?format=xml',
             'alt_url': 'http://oreilly.com/',
             'tag': 'title',
@@ -392,6 +396,7 @@ SITES = [
             'name': "O'Reilly Media",
         },
         {
+            'enabled': True,
             'url': 'http://incsrc.manningpublications.com/dotd.js',
             'alt_url': 'http://www.manning.com/',
             'tag': None,
@@ -399,24 +404,28 @@ SITES = [
             'name': 'Manning Books',
         },
         {
+            'enabled': True,
             'url': 'https://www.apress.com/index.php/dailydeals/index/rss', 
             'tag': 'title',
             'skip_first_tag': True,
             'name': 'Apress',
         },
         {
+            'enabled': True,
             'url': 'http://www.peachpit.com/deals/deal_rss.aspx',
             'tag': 'title',
             'skip_first_tag': True,
             'name': 'Peachpit',
         },
         {
+            'enabled': True,
             'url': 'http://www.informit.com/deals/deal_rss.aspx',
             'tag': 'title',
             'skip_first_tag': True,
             'name': 'Informit',
         },
         {
+            'enabled': True,
             'url': 'http://www.quepublishing.com/deals/deal_rss.aspx',
             'tag': 'title',
             'skip_first_tag': True,
@@ -433,6 +442,10 @@ def main():
 
     # http://docs.python.org/tutorial/datastructures.html#looping-techniques
     for site in SITES:
+        # Skip over any sites that are not "turned on"
+        if not site['enabled']:
+            continue
+
         sites.append(site['name'])
         site_content = fetch_page(site)
         deal = get_deal(site, site_content)
