@@ -76,6 +76,7 @@ DEBUG_VERBOSE = False
 # Prints various high level informational statements
 INFO_ON = False
 
+EMAIL_SERVER = 'localhost'
 FROM_ADDR = "deals@example.com"
 TO_ADDR   = 'root'
 DATE = datetime.date.today()
@@ -305,7 +306,7 @@ def prep_mime_msg(site_names, matches, urls):
     msg = MIMEText(content, 'plain', 'utf_8')
     return msg
 
-def send_email(to_addr, from_addr, subject, msg, site_name=""):
+def send_email(mail_server,to_addr, from_addr, subject, msg, site_name=""):
     """Receives everything necessary to send an email"""
 
     if SINGLE_EMAIL:
@@ -317,7 +318,7 @@ def send_email(to_addr, from_addr, subject, msg, site_name=""):
     msg['To'] = to_addr
 
     # Send the message via our own SMTP server, but don't include the envelope header.
-    server = smtplib.SMTP('localhost')
+    server = smtplib.SMTP(mail_server)
     #server.set_debuglevel(1)
     server.sendmail(from_addr, to_addr, msg.as_string())
     server.quit()
@@ -462,7 +463,7 @@ def main():
                 print "[D] subject and MIME-converted message for send_email function:"
                 print "\n%s\n%s" % (SUBJECT, message)
             else:
-                send_email(TO_ADDR, FROM_ADDR, SUBJECT, message, site['name'])
+                send_email(EMAIL_SERVER,TO_ADDR, FROM_ADDR, SUBJECT, message, site['name'])
 
 
     # Prep and send email for all processed sites
@@ -472,7 +473,7 @@ def main():
             print "\n[D] subject and MIME-converted message for send_email function:"
             print "\n%s\n%s" % (SUBJECT, message)
         else:
-            send_email(TO_ADDR, FROM_ADDR, SUBJECT, message)
+            send_email(EMAIL_SERVER,TO_ADDR, FROM_ADDR, SUBJECT, message)
 
 
 
