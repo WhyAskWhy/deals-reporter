@@ -88,100 +88,49 @@ SINGLE_EMAIL= True
 USE_DEAL_IN_SUBJECT=False
 
 
-# FIXME: Try to shrink this function by using other utility functions
-def pp_get_dotd(site, page_content):
-    """Get the PacktPub eBook Deal of the Day"""
+def packtpub_get_deal(site, page_content):
+    """Get deals from PacktPub"""
 
     looking_for = "%s" % (site['name'])
 
     if INFO_ON: print "\n[I] Searching for %s ..." % (looking_for)
-
-    # String we're matching on to determine whether a dotd offer is available
-    dotd_marker = 'eBook Deal of the Day'
-
-    soup = BeautifulSoup(page_content)
-
-    # FIXME: This needs tweaking, but will have to wait until another
-    #            Deal of the Day is posted.
-    #results = soup.find("div", { "id" : "header-offer" })
-    #results = soup.find("div", { "class" : "inner" })
-
-    # if DEBUG_ON:
-        # print "Type of tag", type(site['tag'])
-        # print "Type of tag_selector", type(site['tag_selector'])
-        # print "Type of tag_selector_value", type(site['tag_selector_value'])
-
-    # search_parameters = '"%s", { "%s" : "%s" }' % \
-        # (site['tag'], site['tag_selector'], site['tag_selector_value'])
-    # results = soup.find(repr(search_parameters))
-
-    # FIXME: How can I fix the code above?
-    results = soup.find("%s" % (site['tag']), \
-        { "%s" % (site['tag_selector']): "%s" % \
-        (site['tag_selector_value']) }).__str__()
-
-    #results = strip_unicode(results)
-
-    if DEBUG_ON: 
-        print "\n[D] results: "
-        ppr(results)
-        print "\n\n"
-
-    deal = BeautifulSoup(results).findAll(text=True)
-
-    if DEBUG_ON:
-        print "\n    [D] What was found: "
-        ppr(deal, indent=4)
-
-    if dotd_marker in deal[1]:
-        dotd = deal[2] + deal[3][0:13]
-        return dotd
-    else:
-        if INFO_ON: print "\n[W] %s was not found" % (looking_for)
-        return False
-
-# FIXME: Try to shrink this function by using other utility functions
-def pp_get_so(site, page_content):
-    """Get the PacktPub Special eBook Offer"""
-
-    looking_for = "%s" % (site['name'])
 
     # String we're matching on to determine whether an offer is available
-    so_marker = 'Special eBook Offer'
-
-    if INFO_ON: print "\n[I] Searching for %s ..." % (looking_for)
+    deal_marker = 'offer'
 
     soup = BeautifulSoup(page_content)
 
-    # search_parameters = '"%s", { "%s" : "%s" }' % \
-        # (site['tag'], site['tag_selector'], site['tag_selector_value'])
-    # results = soup.find(repr(search_parameters))
-
-    # FIXME: How can I fix the code above?
     results = soup.find("%s" % (site['tag']), \
         { "%s" % (site['tag_selector']): "%s" % \
         (site['tag_selector_value']) }).__str__()
 
-
-    if DEBUG_ON: 
+    if DEBUG_ON:
         print "\n[D] results: "
         ppr(results)
         print "\n\n"
 
-    text = BeautifulSoup(results).findAll(text=True)
-    if DEBUG_ON: 
-        print "\n[D] text: "
-        ppr(text)
-        print "\n\n"
+    results = BeautifulSoup(results).findAll(text=True)
 
-    string = ''.join(text)
-    deal = clean_text(string)
+    if DEBUG_ON:
+        print "\n[D] What was found: "
+        ppr(results, indent=4)
 
-    if so_marker in deal:
-        return deal.replace(so_marker,'').strip()
+    # results is a list, so we'll iterate over it and leave out content we don't want
+    # when we create the deal string.
+    deal = ""
+    for item in results:
+        item = item.strip()
+
+        # If it contains letters and numbers or a dollar sign
+        # it is probably worth mentioning
+        if re.match('[a-zA-z0-9]',item) or re.match('\$\d', item):
+            deal += " " + item
+
+    if deal_marker.lower() in deal.lower():
+        return deal
     else:
-        if INFO_ON: print "\n[W] %s was not found" % (looking_for)
-        return False
+        if INFO_ON: print "\n[W] %s was not found" % looking_for
+    return False
 
 def clean_text(text):
     """Removes extraneous spaces, spacing, etc"""
@@ -383,7 +332,7 @@ SITES = [
             'tag_selector_value':'block-block-114',
             'skip_first_tag': False,
             'name': 'Packt Publishing - Special eBook Offer',
-            'parse_function':pp_get_so,
+            'parse_function':packtpub_get_deal,
         },
         {
             'enabled': True,
@@ -395,7 +344,7 @@ SITES = [
             'tag_selector_value':'header-offer', # 'header-offer', 'inner'
             'skip_first_tag': False,
             'name': 'Packt Publishing - eBook Deal of the Day',
-            'parse_function':pp_get_dotd,
+            'parse_function':packtpub_get_deal,
         },
         {
             'enabled': True,
