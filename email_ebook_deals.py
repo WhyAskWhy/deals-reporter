@@ -421,6 +421,13 @@ SITES = [
             'skip_first_tag': True,
             'name': 'Que Publishing',
         },
+        {
+            'enabled': True,
+            'url': 'http://www.ciscopress.com/deals/deal_rss.asp',
+            'tag': 'title',
+            'skip_first_tag': True,
+            'name': 'Cisco Press',
+        },
 ]
 
 
