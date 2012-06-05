@@ -387,6 +387,14 @@ SITES = [
         },
         {
             'enabled': True,
+            'url': 'http://feeds.feedburner.com/oreilly/videodealoftheweek',
+            'alt_url': 'http://oreilly.com/',
+            'tag': 'title',
+            'skip_first_tag': True,
+            'name': "O'Reilly Media",
+        },
+        {
+            'enabled': True,
             'url': 'http://incsrc.manningpublications.com/dotd.js',
             'alt_url': 'http://www.manning.com/',
             'tag': None,
