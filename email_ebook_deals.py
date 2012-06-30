@@ -39,6 +39,7 @@
 # http://stackoverflow.com/questions/1207457/convert-unicode-to-string-in-python-containing-extra-symbols
 # http://docs.python.org/howto/unicode.html
 # http://docs.python.org/library/codecs.html#standard-encodings
+# http://stackoverflow.com/questions/3193060/catch-specific-http-error-in-python
 
 
 # Import smtplib for the actual sending function
@@ -193,7 +194,18 @@ def fetch_page(site):
     # TODO: Add customized user-agent for this project: name, version, url
     request = urllib2.Request(site['url'])
     request.add_header('Accept-encoding', 'gzip')
-    response = urllib2.urlopen(request)
+
+    # Handle vendors doing away with deal feeds
+    try:
+        response = urllib2.urlopen(request)
+    except urllib2.HTTPError, err:
+        if err.code == 404:
+            # Flag problem with feed
+            return False
+        else:
+            # Haven't decided what the best option here is
+            raise
+
     if response.info().get('Content-Encoding') == 'gzip':
         buf = StringIO( response.read())
         fh = gzip.GzipFile(fileobj=buf)
@@ -212,6 +224,11 @@ def fetch_page(site):
 
 def get_deal(site, page_content):
     """Parses web page content and returns matched strings"""
+
+    # Short circuit checks if the deal link doesn't exist 
+    # or if there are other problems with it
+    if not (page_content):
+        return False
 
     if DEBUG_ON and DEBUG_VERBOSE:
         print '[D] value of site:'
