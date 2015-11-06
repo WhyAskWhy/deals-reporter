@@ -427,6 +427,13 @@ SITES = [
         },
         {
             'enabled': True,
+            'url': 'http://www.apress.com/index.php/dailydealsspringer/index/rss', 
+            'tag': 'title',
+            'skip_first_tag': True,
+            'name': 'Springer',
+        },
+        {
+            'enabled': True,
             'url': 'http://www.peachpit.com/deals/deal_rss.aspx',
             'tag': 'title',
             'skip_first_tag': True,
