@@ -444,7 +444,14 @@ SITES = [
             'url': 'http://www.informit.com/deals/deal_rss.aspx',
             'tag': 'title',
             'skip_first_tag': True,
-            'name': 'Informit',
+            'name': 'Informit - eBook Deal of the Day',
+        },
+        {
+            'enabled': True,
+            'url': 'http://www.informit.com/deals/video/deal_rss.aspx',
+            'tag': 'title',
+            'skip_first_tag': True,
+            'name': 'Informit - Video Deal of the Week',
         },
         {
             'enabled': True,
