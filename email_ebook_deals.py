@@ -388,7 +388,7 @@ SITES = [
         },
         {
             'enabled': True,
-            'url': 'http://feeds.feedburner.com/oreilly/mspebookdeal?format=xml',
+            'url': 'https://www.microsoftpressstore.com/deals/deal_rss.aspx',
             'alt_url': 'http://oreilly.com/',
             'tag': 'title',
             'skip_first_tag': True,
